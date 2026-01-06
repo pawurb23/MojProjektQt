@@ -6,14 +6,16 @@
 class ProstyUAR {
 private:
 
-	ModelARX* model;
-	RegulatorPID* regulator;
+	ModelARX model;
+	RegulatorPID regulator;
 	double y_ost;
 
 public:
 
-	ProstyUAR(ModelARX& m, RegulatorPID& r);
+	ProstyUAR();
 
 	double symuluj(double y_zad);
-	void reset();
+
+	ModelARX& getModel() { return model; }
+	RegulatorPID& getRegulator() { return regulator; }
 };
