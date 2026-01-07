@@ -1,4 +1,5 @@
 #pragma once
+
 #include <QObject>
 #include <QTimer>
 #include <vector>
@@ -22,18 +23,17 @@ public:
 
     void ustawPID(double k, double ti, double td);
     void ustawModel(std::vector<double> A, std::vector<double> B, int k, double z);
-    void ustawGenerator(int typ, double A, double T, double wypelnienie);
+
+    void ustawGenerator(int typIndex, double amp, double T, double p);
 
 signals:
 
     void noweDane(double czas, double y_obiektu, double y_zadane, double sterowanie_u, double uchyb_e);
 
 private slots:
-
     void wykonajKrok();
 
 private:
-
     QTimer *timer;
 
     ProstyUAR *uar;
@@ -41,5 +41,5 @@ private:
 
     double czasSymulacji;
     double krokCzasu;
+    long long numerKroku;
 };
-

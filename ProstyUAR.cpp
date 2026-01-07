@@ -1,16 +1,62 @@
 #include "ProstyUAR.h"
 
-ProstyUAR::ProstyUAR() : model({-1.0}, {1.0}, 1, 0.0), regulator(1.0, 0.0, 0.0) {
+ProstyUAR::ProstyUAR(ModelARX& m, RegulatorPID& r) {
 
-	y_ost = 0.0;
+    model = &m;
+    regulator = &r;
+    czyWlasciciel = false;
+    reset();
+}
+
+ProstyUAR::ProstyUAR() {
+
+    model = new ModelARX({ -1.0 }, { 1.0 }, 1, 0.0);
+    regulator = new RegulatorPID(1.0, 0.0, 0.0);
+    czyWlasciciel = true;
+    reset();
+}
+
+ProstyUAR::~ProstyUAR() {
+
+    if (czyWlasciciel) {
+        if (model) delete model;
+        if (regulator) delete regulator;
+    }
 }
 
 double ProstyUAR::symuluj(double y_zad) {
 
-	double uchyb = y_zad - y_ost;
-	double u_wej = regulator.symuluj(uchyb);
-	double y_wyj = model.symuluj(u_wej);
+    double uchyb = y_zad - y_ost;
+    double u_wej = regulator->symuluj(uchyb);
+    double y_wyj = model->symuluj(u_wej);
 
-	y_ost = y_wyj;
-	return y_wyj;
+    y_ost = y_wyj;
+    u_akt = u_wej;
+    e_akt = uchyb;
+
+    return y_wyj;
+}
+
+void ProstyUAR::reset() {
+
+    y_ost = 0.0;
+    u_akt = 0.0;
+    e_akt = 0.0;
+    if (regulator) regulator->resetPamieci();
+}
+
+void ProstyUAR::setPID(double k, double ti, double td) {
+
+    if (regulator) regulator->setNastawy(k, ti, td);
+}
+
+void ProstyUAR::setModel(std::vector<double> A, std::vector<double> B, int k, double z) {
+
+    if (model) {
+
+        model->setWspA(A);
+        model->setWspB(B);
+        model->setOpoznienie(k);
+        model->setZaklocenia(z);
+    }
 }
