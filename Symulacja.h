@@ -28,7 +28,7 @@ public:
 
 signals:
 
-    void noweDane(double czas, double y_obiektu, double y_zadane, double sterowanie_u, double uchyb_e);
+    void noweDane(double czas, double y_obiektu, double y_zadane, double sterowanie_u, double uchyb_e, double up, double ui, double ud);
 
 private slots:
     void wykonajKrok();

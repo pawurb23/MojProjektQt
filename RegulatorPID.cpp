@@ -43,27 +43,25 @@ void RegulatorPID::setLiczCalk(LiczCalk tryb) {
 
 double RegulatorPID::symuluj(double uchyb) {
 
-	double u_p = Kp * uchyb;
-
-	double u_i = 0.0;
+	up = Kp * uchyb;
 
 	if (abs(Ti) > 0.00001) {
 
 		if (tryb_calkowania == LiczCalk::Zew) {
 
 			suma_uchybow += uchyb;
-			u_i = (1.0 / Ti) * suma_uchybow;
+			ui = (1.0 / Ti) * suma_uchybow;
 		}
 		else {
 
 			suma_uchybow += (uchyb / Ti);
-			u_i = suma_uchybow;
+			ui = suma_uchybow;
 		}
 	}
-	else { u_i = 0.0; }
+	else { ui = 0.0; }
 
-	double u_d = Td * (uchyb - poprzedni_uchyb);
+	ud = Td * (uchyb - poprzedni_uchyb);
 	poprzedni_uchyb = uchyb;
 
-	return u_p + u_i + u_d;
+	return up + ui + ud;
 }

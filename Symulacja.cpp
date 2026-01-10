@@ -50,8 +50,11 @@ void Symulacja::wykonajKrok() {
 
     double u_ster = uar->getSterowanie();
     double e_uchyb = uar->getUchyb();
+    double p = uar->getP();
+    double i = uar->getI();
+    double d = uar->getD();
 
-    emit noweDane(czasSymulacji, y_wyj, y_zad, u_ster, e_uchyb);
+    emit noweDane(czasSymulacji, y_wyj, y_zad, u_ster, e_uchyb, p, i, d);
 
     czasSymulacji += krokCzasu;
     numerKroku++;

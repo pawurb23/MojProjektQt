@@ -14,11 +14,40 @@ MainWindow::MainWindow(QWidget *parent)
     seriaYzad = new QLineSeries();
     seriaU = new QLineSeries();
     seriaE = new QLineSeries();
+    seriaP = new QLineSeries();
+    seriaI = new QLineSeries();
+    seriaD = new QLineSeries();
 
-    przygotujWykres(ui->chartViewY, seriaY, "Wyjście obiektu y(t)", 0);
-    przygotujWykres(ui->chartViewYzad, seriaYzad, "Wartość zadana y_zad(t)", 1);
-    przygotujWykres(ui->chartViewU, seriaU, "Sterowanie u(t)", 2);
-    przygotujWykres(ui->chartViewE, seriaE, "Uchyb e(t)", 3);
+    stylizujSerie(seriaY, Qt::blue, "Wyjście y(t)");
+    stylizujSerie(seriaYzad, Qt::red, "Zadana y_zad(t)");
+    stylizujSerie(seriaE, Qt::magenta, "Uchyb e(t)");
+    stylizujSerie(seriaU, Qt::darkGreen, "Sterowanie u(t)");
+    stylizujSerie(seriaP, Qt::red, "P");
+    stylizujSerie(seriaI, Qt::green, "I");
+    stylizujSerie(seriaD, Qt::blue, "D");
+
+    QChart *chart1 = new QChart();
+    chart1->addSeries(seriaY);
+    chart1->addSeries(seriaYzad);
+    chart1->setTitle("Regulacja (y vs y_zad)");
+    przygotujWykres(ui->chartViewY, chart1, {seriaY, seriaYzad}, 0);
+
+    QChart *chart2 = new QChart();
+    chart2->addSeries(seriaE);
+    chart2->setTitle("Uchyb e(t)");
+    przygotujWykres(ui->chartViewYzad, chart2, {seriaE}, 1);
+
+    QChart *chart3 = new QChart();
+    chart3->addSeries(seriaU);
+    chart3->setTitle("Sterowanie u(t)");
+    przygotujWykres(ui->chartViewU, chart3, {seriaU}, 2);
+
+    QChart *chart4 = new QChart();
+    chart4->addSeries(seriaP);
+    chart4->addSeries(seriaI);
+    chart4->addSeries(seriaD);
+    chart4->setTitle("Składowe PID");
+    przygotujWykres(ui->chartViewE, chart4, {seriaP, seriaI, seriaD}, 3);
 
     connect(symulacja, &Symulacja::noweDane, this, &MainWindow::aktualizujWykresy);
 }
@@ -28,25 +57,31 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::przygotujWykres(QChartView *view, QLineSeries *series, QString tytul, int index) {
-
-    QChart *chart = new QChart();
-    chart->addSeries(series);
-    chart->setTitle(tytul);
-    chart->legend()->hide();
+void MainWindow::przygotujWykres(QChartView *view, QChart *chart, const QList<QLineSeries*> &serieLista, int index) {
 
     osX[index] = new QValueAxis();
     osX[index]->setRange(0, 10);
     chart->addAxis(osX[index], Qt::AlignBottom);
-    series->attachAxis(osX[index]);
 
     osY[index] = new QValueAxis();
-    osY[index]->setRange(-2, 2);
+    osY[index]->setRange(-10, 10);
     chart->addAxis(osY[index], Qt::AlignLeft);
-    series->attachAxis(osY[index]);
 
-    view->setChart(chart);
+    for(auto s : serieLista) {
+        s->attachAxis(osX[index]);
+        s->attachAxis(osY[index]);
+    }
+
     view->setRenderHint(QPainter::Antialiasing);
+    view->setChart(chart);
+}
+
+void MainWindow::stylizujSerie(QLineSeries *series, QColor color, QString nazwa) {
+
+    QPen pen(color);
+    pen.setWidthF(1.0);
+    series->setPen(pen);
+    series->setName(nazwa);
 }
 
 void MainWindow::on_btnKonfiguracja_clicked() {
@@ -64,7 +99,7 @@ void MainWindow::on_btnKonfiguracja_clicked() {
     }
 }
 
-void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, double e) {
+void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, double e, double up, double ui, double ud) {
 
     qDebug() << "Czas:" << t << " Zad:" << y_zad << " Wyj:" << y << " U:" << u;
 
@@ -72,12 +107,15 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
     seriaYzad->append(t, y_zad);
     seriaU->append(t, u);
     seriaE->append(t, e);
+    seriaP->append(t, up);
+    seriaI->append(t, ui);
+    seriaD->append(t, ud);
 
     double obecnyMax = std::max({y, y_zad, u, e});
     double obecnyMin = std::min({y, y_zad, u, e});
 
     bool zmianaSkali = false;
-    if (obecnyMax > maxY) { maxY = obecnyMax + 1.0; zmianaSkali = true; } // +1 marginesu
+    if (obecnyMax > maxY) { maxY = obecnyMax + 1.0; zmianaSkali = true; }
     if (obecnyMin < minY) { minY = obecnyMin - 1.0; zmianaSkali = true; }
 
     if (zmianaSkali) {
@@ -119,6 +157,9 @@ void MainWindow::on_btnReset_clicked()
     seriaYzad->clear();
     seriaU->clear();
     seriaE->clear();
+    seriaP->clear();
+    seriaI->clear();
+    seriaD->clear();
 
     minY = -1.0; maxY = 1.0;
 
@@ -128,7 +169,7 @@ void MainWindow::on_btnReset_clicked()
     }
 }
 
-void MainWindow::on_spinKp_valueChanged(double arg1)
+void MainWindow::on_spinKp_valueChanged(double)
 {
 
     double k = ui->spinKp->value();

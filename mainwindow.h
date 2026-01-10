@@ -23,12 +23,12 @@ public:
 
 private slots:
 
-    void aktualizujWykresy(double t, double y, double y_zad, double u, double e);
+    void aktualizujWykresy(double t, double y, double y_zad, double u, double e, double up, double ui, double id);
     void on_btnStart_clicked();
     void on_btnStop_clicked();
     void on_btnReset_clicked();
     void on_btnKonfiguracja_clicked();
-    void on_spinKp_valueChanged(double arg1);
+    void on_spinKp_valueChanged(double);
 
 private:
     Ui::MainWindow *ui;
@@ -40,11 +40,15 @@ private:
     QLineSeries *seriaYzad;
     QLineSeries *seriaU;
     QLineSeries *seriaE;
+    QLineSeries *seriaP;
+    QLineSeries *seriaI;
+    QLineSeries *seriaD;
 
     QValueAxis *osX[4];
     QValueAxis *osY[4];
 
-    void przygotujWykres(QChartView *view, QLineSeries *series, QString tytul, int index);
+    void przygotujWykres(QChartView *view, QChart *chart, const QList<QLineSeries*> &serieLista, int index);
+    void stylizujSerie(QLineSeries *series, QColor color, QString nazwa);
     void przeslijNastawy();
 };
 #endif // MAINWINDOW_H

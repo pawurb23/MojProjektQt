@@ -13,12 +13,15 @@ private:
 	double Ti;
 	double Td;
 
-	//pamiêæ regulatora
+	//pamiec regulatora
 	double suma_uchybow;
 	double poprzedni_uchyb;
 
-	//tryb ca³kowania
+	//tryb calkowania
 	LiczCalk tryb_calkowania;
+
+	//skladowe sterowania
+	double up, ui, ud;
 
 public:
 
@@ -37,4 +40,7 @@ public:
 	double getStalaCalk() { return Ti; }
 	double getStalaRoz() { return Td; }
 	LiczCalk getLiczCalk() { return tryb_calkowania; }
+	double getUp() const { return up; }
+	double getUi() const { return ui; }
+	double getUd() const { return ud; }
 };
