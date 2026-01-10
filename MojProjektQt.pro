@@ -1,3 +1,4 @@
+QT       += core gui charts
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -15,7 +16,8 @@ SOURCES += \
     RegulatorPID.cpp \
     Symulacja.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    opcjesymulacji.cpp
 
 HEADERS += \
     Generator.h \
@@ -23,10 +25,12 @@ HEADERS += \
     ProstyUAR.h \
     RegulatorPID.h \
     Symulacja.h \
-    mainwindow.h
+    mainwindow.h \
+    opcjesymulacji.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    opcjesymulacji.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

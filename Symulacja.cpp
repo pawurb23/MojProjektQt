@@ -1,7 +1,6 @@
 #include "Symulacja.h"
 
-Symulacja::Symulacja(QObject *parent) : QObject(parent)
-{
+Symulacja::Symulacja(QObject *parent) : QObject(parent) {
 
     krokCzasu = 0.01;
     int Tt_ms = 10;
@@ -19,32 +18,32 @@ Symulacja::Symulacja(QObject *parent) : QObject(parent)
     numerKroku = 0;
 }
 
-void Symulacja::start()
-{
+void Symulacja::start() {
+
     if (!timer->isActive())
         timer->start();
 }
 
-void Symulacja::stop()
-{
+void Symulacja::stop() {
+
     timer->stop();
 }
 
-void Symulacja::reset()
-{
+void Symulacja::reset() {
+
     stop();
     czasSymulacji = 0.0;
     numerKroku = 0;
     if (uar) uar->reset();
 }
 
-bool Symulacja::czyDziala() const
-{
+bool Symulacja::czyDziala() const {
+
     return timer->isActive();
 }
 
-void Symulacja::wykonajKrok()
-{
+void Symulacja::wykonajKrok() {
+
     double y_zad = generator->generuj(static_cast<int>(numerKroku));
 
     double y_wyj = uar->symuluj(y_zad);
@@ -58,18 +57,17 @@ void Symulacja::wykonajKrok()
     numerKroku++;
 }
 
-void Symulacja::ustawPID(double k, double ti, double td)
-{
+void Symulacja::ustawPID(double k, double ti, double td) {
+
     if (uar) uar->setPID(k, ti, td);
 }
 
-void Symulacja::ustawModel(std::vector<double> A, std::vector<double> B, int k, double z)
-{
+void Symulacja::ustawModel(std::vector<double> A, std::vector<double> B, int k, double z) {
+
     if (uar) uar->setModel(A, B, k, z);
 }
 
-void Symulacja::ustawGenerator(int typIndex, double amp, double T, double p)
-{
+void Symulacja::ustawGenerator(int typIndex, double amp, double T, double p) {
 
     Generator::TypSygnalu typ = Generator::TypSygnalu::Staly;
 
