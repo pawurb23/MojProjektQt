@@ -1,3 +1,5 @@
+#include <QDebug>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -64,10 +66,26 @@ void MainWindow::on_btnKonfiguracja_clicked() {
 
 void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, double e) {
 
+    qDebug() << "Czas:" << t << " Zad:" << y_zad << " Wyj:" << y << " U:" << u;
+
     seriaY->append(t, y);
     seriaYzad->append(t, y_zad);
     seriaU->append(t, u);
     seriaE->append(t, e);
+
+    double obecnyMax = std::max({y, y_zad, u, e});
+    double obecnyMin = std::min({y, y_zad, u, e});
+
+    bool zmianaSkali = false;
+    if (obecnyMax > maxY) { maxY = obecnyMax + 1.0; zmianaSkali = true; } // +1 marginesu
+    if (obecnyMin < minY) { minY = obecnyMin - 1.0; zmianaSkali = true; }
+
+    if (zmianaSkali) {
+        for(int i=0; i<4; i++) {
+
+            osY[i]->setRange(minY, maxY);
+        }
+    }
 
     double oknoCzasu = 10.0;
     if (t > oknoCzasu) {
@@ -76,13 +94,15 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
 
             osX[i]->setRange(t - oknoCzasu, t);
         }
-    }
+    } else {
 
-    osY[0]->setRange(-5, 5);
+        for(int i=0; i<4; i++) osX[i]->setRange(0, 10);
+    }
 }
 
 void MainWindow::on_btnStart_clicked() {
 
+    przeslijNastawy();
     symulacja->start();
 }
 
@@ -100,6 +120,8 @@ void MainWindow::on_btnReset_clicked()
     seriaU->clear();
     seriaE->clear();
 
+    minY = -1.0; maxY = 1.0;
+
     for(int i=0; i<4; i++) {
 
         if(osX[i]) osX[i]->setRange(0, 10);
@@ -114,4 +136,19 @@ void MainWindow::on_spinKp_valueChanged(double arg1)
     double td = ui->spinTd->value();
 
     symulacja->ustawPID(k, ti, td);
+}
+
+void MainWindow::przeslijNastawy()
+{
+
+    double kp = ui->spinKp->value();
+    double ti = ui->spinTi->value();
+    double td = ui->spinTd->value();
+    symulacja->ustawPID(kp, ti, td);
+
+    int typ = ui->comboTyp->currentIndex();
+    double amp = ui->spinAmp->value();
+    double okres = ui->spinOkres->value();
+    double p = ui->spinWyp->value();
+    symulacja->ustawGenerator(typ, amp, okres, p);
 }

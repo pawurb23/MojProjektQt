@@ -34,6 +34,8 @@ private:
     Ui::MainWindow *ui;
     Symulacja* symulacja;
 
+    double minY = -1.0, maxY = 1.0;
+
     QLineSeries *seriaY;
     QLineSeries *seriaYzad;
     QLineSeries *seriaU;
@@ -43,5 +45,6 @@ private:
     QValueAxis *osY[4];
 
     void przygotujWykres(QChartView *view, QLineSeries *series, QString tytul, int index);
+    void przeslijNastawy();
 };
 #endif // MAINWINDOW_H

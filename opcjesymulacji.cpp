@@ -1,11 +1,16 @@
 #include "opcjesymulacji.h"
 #include "ui_opcjesymulacji.h"
 
+#include <QPushButton>
+
 opcjeSymulacji::opcjeSymulacji(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::opcjeSymulacji)
 {
     ui->setupUi(this);
+
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
 opcjeSymulacji::~opcjeSymulacji()
