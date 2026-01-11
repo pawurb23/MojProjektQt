@@ -1,5 +1,7 @@
 #include "ProstyUAR.h"
 
+#include <QtGlobal>
+
 ProstyUAR::ProstyUAR(ModelARX& m, RegulatorPID& r) {
 
     model = &m;
@@ -50,6 +52,11 @@ void ProstyUAR::setPID(double k, double ti, double td) {
     if (regulator) regulator->setNastawy(k, ti, td);
 }
 
+void ProstyUAR::setTrybPID(RegulatorPID::LiczCalk tryb) {
+
+    if(regulator) regulator->setLiczCalk(tryb);
+}
+
 void ProstyUAR::setModel(std::vector<double> A, std::vector<double> B, int k, double z) {
 
     if (model) {
@@ -58,5 +65,15 @@ void ProstyUAR::setModel(std::vector<double> A, std::vector<double> B, int k, do
         model->setWspB(B);
         model->setOpoznienie(k);
         model->setZaklocenia(z);
+    }
+}
+
+void ProstyUAR::setOgraniczenia(double umin, double umax, double ymin, double ymax, bool aktywne) {
+
+    if(czyWlasciciel || model) {
+
+        model->setOgraniczeniaU(umin, umax);
+        model->setOgraniczeniaY(ymin, ymax);
+        model->setOgraniczenia(aktywne);
     }
 }

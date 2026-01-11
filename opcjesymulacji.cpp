@@ -52,7 +52,8 @@ double opcjeSymulacji::getZ() const {
     return ui->spinZ->value();
 }
 
-void opcjeSymulacji::setParametry(std::vector<double> a, std::vector<double> b, int k, double z) {
+void opcjeSymulacji::setParametry(std::vector<double> a, std::vector<double> b, int k, double z,
+                                    double umin, double umax, double ymin, double ymax, bool active) {
 
     QString strA;
     for(double val : a) strA += QString::number(val) + ",";
@@ -66,6 +67,11 @@ void opcjeSymulacji::setParametry(std::vector<double> a, std::vector<double> b, 
     ui->lineB->setText(strB);
     ui->spinK->setValue(k);
     ui->spinZ->setValue(z);
+    ui->spinUmin->setValue(umin);
+    ui->spinUmax->setValue(umax);
+    ui->spinYmin->setValue(ymin);
+    ui->spinYmax->setValue(ymax);
+    ui->checkOgraniczenia->setChecked(active);
 }
 
 void opcjeSymulacji::on_buttonBox_accepted()

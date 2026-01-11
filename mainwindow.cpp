@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->showMaximized();
     symulacja = new Symulacja(this);
 
     seriaY = new QLineSeries();
@@ -48,6 +49,9 @@ MainWindow::MainWindow(QWidget *parent)
     chart4->addSeries(seriaD);
     chart4->setTitle("Składowe PID");
     przygotujWykres(ui->chartViewE, chart4, {seriaP, seriaI, seriaD}, 3);
+
+    QChartView *chartview4 = new QChartView(chart4);
+    chartview4->setFixedSize(400, 400);
 
     connect(symulacja, &Symulacja::noweDane, this, &MainWindow::aktualizujWykresy);
 }
@@ -111,6 +115,24 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
     seriaI->append(t, ui);
     seriaD->append(t, ud);
 
+    double oknoCzasu = 10.0;
+
+    if (seriaY->count() > 0) {
+
+        QPointF pierwszy = seriaY->at(0);
+
+        if (pierwszy.x() < t - oknoCzasu) {
+
+            seriaY->remove(0);
+            seriaYzad->remove(0);
+            seriaU->remove(0);
+            seriaE->remove(0);
+            seriaP->remove(0);
+            seriaI->remove(0);
+            seriaD->remove(0);
+        }
+    }
+
     double obecnyMax = std::max({y, y_zad, u, e});
     double obecnyMin = std::min({y, y_zad, u, e});
 
@@ -125,22 +147,20 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
         }
     }
 
-    double oknoCzasu = 10.0;
     if (t > oknoCzasu) {
 
-        for(int i=0; i<4; i++) {
+        osX[0]->setRange(t - oknoCzasu, t);
 
-            osX[i]->setRange(t - oknoCzasu, t);
-        }
     } else {
 
-        for(int i=0; i<4; i++) osX[i]->setRange(0, 10);
+        osX[0]->setRange(0, 10);
     }
 }
 
 void MainWindow::on_btnStart_clicked() {
 
     przeslijNastawy();
+    symulacja->ustawInterwalTimer(ui->spinInterwal->value());
     symulacja->start();
 }
 
@@ -177,6 +197,16 @@ void MainWindow::on_spinKp_valueChanged(double)
     double td = ui->spinTd->value();
 
     symulacja->ustawPID(k, ti, td);
+}
+
+void MainWindow::on_comboTrybCalk_currentIndexChanged(int index)
+{
+    symulacja->ustawTrybPID(index);
+}
+
+void MainWindow::on_spinInterwal_valueChanged(int arg1)
+{
+    if(symulacja) symulacja->ustawInterwalTimer(arg1);
 }
 
 void MainWindow::przeslijNastawy()

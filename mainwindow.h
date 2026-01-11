@@ -29,6 +29,8 @@ private slots:
     void on_btnReset_clicked();
     void on_btnKonfiguracja_clicked();
     void on_spinKp_valueChanged(double);
+    void on_comboTrybCalk_currentIndexChanged(int index);
+    void on_spinInterwal_valueChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;

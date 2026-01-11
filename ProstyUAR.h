@@ -31,7 +31,9 @@ public:
 	RegulatorPID& getRegulator() { return *regulator; }
 
 	void setPID(double k, double ti, double td);
+    void setTrybPID(RegulatorPID::LiczCalk tryb);
 	void setModel(std::vector<double> A, std::vector<double> B, int k, double z);
+    void setOgraniczenia(double umin, double umax, double ymin, double ymax, bool aktywne);
 
 	double getP() { return regulator->getUp(); }
 	double getI() { return regulator->getUi(); }

@@ -22,9 +22,13 @@ public:
     bool czyDziala() const;
 
     void ustawPID(double k, double ti, double td);
+    void ustawTrybPID(int index);
     void ustawModel(std::vector<double> A, std::vector<double> B, int k, double z);
+    void ustawOgraniczeniaModelu(double umin, double umax, double ymin, double ymax, bool aktywne);
 
     void ustawGenerator(int typIndex, double amp, double T, double p);
+
+    void ustawInterwalTimer(int ms);
 
 signals:
 

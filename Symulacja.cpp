@@ -65,9 +65,20 @@ void Symulacja::ustawPID(double k, double ti, double td) {
     if (uar) uar->setPID(k, ti, td);
 }
 
+void Symulacja::ustawTrybPID(int index) {
+
+    auto tryb = (index == 0) ? RegulatorPID::LiczCalk::Zew : RegulatorPID::LiczCalk::Wew;
+    if(uar) uar->setTrybPID(tryb);
+}
+
 void Symulacja::ustawModel(std::vector<double> A, std::vector<double> B, int k, double z) {
 
     if (uar) uar->setModel(A, B, k, z);
+}
+
+void Symulacja::ustawOgraniczeniaModelu(double umin, double umax, double ymin, double ymax, bool aktywne) {
+
+    if(uar) uar->setOgraniczenia(umin, umax, ymin, ymax, aktywne);
 }
 
 void Symulacja::ustawGenerator(int typIndex, double amp, double T, double p) {
@@ -81,4 +92,9 @@ void Symulacja::ustawGenerator(int typIndex, double amp, double T, double p) {
     generator->setA(amp);
     generator->setTrz(T);
     generator->setp(p);
+}
+
+void Symulacja::ustawInterwalTimer(int ms) {
+
+    timer->setInterval(ms);
 }

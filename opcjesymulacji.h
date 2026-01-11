@@ -22,8 +22,14 @@ public:
     std::vector<double> getB() const;
     int getK() const;
     double getZ() const;
+    double getUmin() const;
+    double getUmax() const;
+    double getYmin() const;
+    double getYmax() const;
+    bool getOgraniczeniaAktywne() const;
 
-    void setParametry(std::vector<double> a, std::vector<double> b, int k, double z);
+    void setParametry(std::vector<double> a, std::vector<double> b, int k, double z,
+                      double umin, double umax, double ymin, double ymax, bool active);
 
 private slots:
     void on_buttonBox_accepted();
