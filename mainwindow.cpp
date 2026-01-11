@@ -93,21 +93,6 @@ void MainWindow::stylizujSerie(QLineSeries *series, QColor color, QString nazwa)
     series->setName(nazwa);
 }
 
-void MainWindow::on_btnKonfiguracja_clicked() {
-
-    opcjeSymulacji okno(this);
-
-    if (okno.exec() == QDialog::Accepted) {
-
-        std::vector<double> A = okno.getA();
-        std::vector<double> B = okno.getB();
-        int k = okno.getK();
-        double z = okno.getZ();
-
-        symulacja->ustawModel(A, B, k, z);
-    }
-}
-
 void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, double e, double up, double ui, double ud) {
 
     qDebug() << "Czas:" << t << " Zad:" << y_zad << " Wyj:" << y << " U:" << u;
@@ -119,6 +104,21 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
     seriaP->append(t, up);
     seriaI->append(t, ui);
     seriaD->append(t, ud);
+
+    double obecnyMax = std::max({y, y_zad, u, e, up, ui, ud});
+    double obecnyMin = std::min({y, y_zad, u, e, up, ui, ud});
+
+    bool zmianaSkali = false;
+    if (obecnyMax > maxY) { maxY = obecnyMax + 1.0; zmianaSkali = true; }
+    if (obecnyMin < minY) { minY = obecnyMin - 1.0; zmianaSkali = true; }
+
+    if (zmianaSkali) {
+
+        for(int i=0; i<4; i++) {
+
+            if(osY[i]) osY[i]->setRange(minY, maxY);
+        }
+    }
 
     double oknoCzasu = 10.0;
 
@@ -138,27 +138,18 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
         }
     }
 
-    double obecnyMax = std::max({y, y_zad, u, e});
-    double obecnyMin = std::min({y, y_zad, u, e});
-
-    bool zmianaSkali = false;
-    if (obecnyMax > maxY) { maxY = obecnyMax + 1.0; zmianaSkali = true; }
-    if (obecnyMin < minY) { minY = obecnyMin - 1.0; zmianaSkali = true; }
-
-    if (zmianaSkali) {
-        for(int i=0; i<4; i++) {
-
-            osY[i]->setRange(minY, maxY);
-        }
-    }
-
     if (t > oknoCzasu) {
 
-        osX[0]->setRange(t - oknoCzasu, t);
+        for(int i=0; i<4; i++) {
 
+            if(osX[i]) { osX[i]->setRange(t - oknoCzasu, t); }
+        }
     } else {
 
-        osX[0]->setRange(0, 10);
+        for(int i=0; i<4; i++) {
+
+            if(osX[i]) { osX[i]->setRange(0, oknoCzasu); }
+        }
     }
 }
 
@@ -194,25 +185,44 @@ void MainWindow::on_btnReset_clicked()
     }
 }
 
-void MainWindow::on_spinKp_valueChanged(double)
-{
+void MainWindow::on_btnKonfiguracja_clicked() {
 
-    double k = ui->spinKp->value();
-    double ti = ui->spinTi->value();
-    double td = ui->spinTd->value();
+    opcjeSymulacji okno(this);
 
-    symulacja->ustawPID(k, ti, td);
+    if (okno.exec() == QDialog::Accepted) {
+
+        std::vector<double> A = okno.getA();
+        std::vector<double> B = okno.getB();
+        int k = okno.getK();
+        double z = okno.getZ();
+
+        symulacja->ustawModel(A, B, k, z);
+    }
 }
 
-void MainWindow::on_comboTrybCalk_currentIndexChanged(int index)
+void MainWindow::on_spinKp_valueChanged(double) { przeslijNastawy(); }
+void MainWindow::on_spinTi_valueChanged(double) { przeslijNastawy(); }
+void MainWindow::on_spinTd_valueChanged(double) { przeslijNastawy(); }
+void MainWindow::on_comboTrybCalk_currentIndexChanged(int index) { symulacja->ustawTrybPID(index); }
+void MainWindow::on_btnResetCalki_clicked() { symulacja->zresetujCalkePID(); }
+void MainWindow::on_spinMinI_valueChanged(double) { symulacja->ustawLimityCalki(ui->spinMinI->value(), ui->spinMaxI->value()); }
+void MainWindow::on_spinMaxI_valueChanged(double) { symulacja->ustawLimityCalki(ui->spinMinI->value(), ui->spinMaxI->value()); }
+
+void MainWindow::on_checkAntiWindup_toggled(bool checked)
 {
-    symulacja->ustawTrybPID(index);
+    symulacja->ustawAntiWindup(checked);
+
+    ui->spinMinI->setEnabled(checked);
+    ui->spinMaxI->setEnabled(checked);
 }
 
-void MainWindow::on_spinInterwal_valueChanged(int arg1)
-{
-    if(symulacja) symulacja->ustawInterwalTimer(arg1);
-}
+void MainWindow::on_comboTyp_currentIndexChanged(int) { przeslijNastawy(); }
+void MainWindow::on_spinAmp_valueChanged(double)      { przeslijNastawy(); }
+void MainWindow::on_spinS_valueChanged(double)        { przeslijNastawy(); }
+void MainWindow::on_spinOkres_valueChanged(double)    { przeslijNastawy(); }
+void MainWindow::on_spinWyp_valueChanged(double)      { przeslijNastawy(); }
+
+void MainWindow::on_spinInterwal_valueChanged(int arg1) { if(symulacja) symulacja->ustawInterwalTimer(arg1); }
 
 void MainWindow::przeslijNastawy()
 {
@@ -221,10 +231,17 @@ void MainWindow::przeslijNastawy()
     double ti = ui->spinTi->value();
     double td = ui->spinTd->value();
     symulacja->ustawPID(kp, ti, td);
+    double minI = ui->spinMinI->value();
+    double maxI = ui->spinMaxI->value();
+    symulacja->ustawLimityCalki(minI, maxI);
+    symulacja->ustawAntiWindup(ui->checkAntiWindup->isChecked());
+    ui->spinMinI->setEnabled(ui->checkAntiWindup->isChecked());
+    ui->spinMaxI->setEnabled(ui->checkAntiWindup->isChecked());
 
     int typ = ui->comboTyp->currentIndex();
     double amp = ui->spinAmp->value();
+    double S = ui->spinS->value();
     double okres = ui->spinOkres->value();
     double p = ui->spinWyp->value();
-    symulacja->ustawGenerator(typ, amp, okres, p);
+    symulacja->ustawGenerator(typ, amp, S, okres, p);
 }

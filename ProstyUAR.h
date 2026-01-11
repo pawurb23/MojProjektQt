@@ -23,6 +23,7 @@ public:
 
 	double symuluj(double y_zad);
 	void reset();
+    void resetCalki();
 
 	double getSterowanie() const { return u_akt; }
 	double getUchyb() const { return e_akt; }
@@ -32,7 +33,10 @@ public:
 
 	void setPID(double k, double ti, double td);
     void setTrybPID(RegulatorPID::LiczCalk tryb);
-	void setModel(std::vector<double> A, std::vector<double> B, int k, double z);
+    void setLimityCalki(double min, double max);
+    void setAntiWindup(bool aktywne);
+
+    void setModel(std::vector<double> A, std::vector<double> B, int k, double z);
     void setOgraniczenia(double umin, double umax, double ymin, double ymax, bool aktywne);
 
 	double getP() { return regulator->getUp(); }

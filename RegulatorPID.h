@@ -23,17 +23,24 @@ private:
 	//skladowe sterowania
 	double up, ui, ud;
 
+    //ograniczenia calki
+    double min_ui = 10.0, max_ui = 10.0;
+    bool aw_aktywne = true;
+
 public:
 
 	RegulatorPID(double k, double ti = 0.0, double td = 0.0);
 
 	double symuluj(double uchyb);
+    void zresetujCalke();
 
 	void setStalaWzm(double k);
 	void setStalaCalk(double ti);
 	void setStalaRoz(double td);
 	void setNastawy(double k, double ti, double td);
 	void setLiczCalk(LiczCalk tryb);
+    void setOgraniczeniaCalki(double min, double max);
+    void setAntiWindup(bool aktywne) { aw_aktywne = aktywne; }
 	void resetPamieci();
 
 	double getStalaWzm() { return Kp; }

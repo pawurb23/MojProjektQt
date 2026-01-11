@@ -71,6 +71,21 @@ void Symulacja::ustawTrybPID(int index) {
     if(uar) uar->setTrybPID(tryb);
 }
 
+void Symulacja::zresetujCalkePID() {
+
+    if(uar) uar->resetCalki();
+}
+
+void Symulacja::ustawLimityCalki(double min, double max) {
+
+    if (uar) { uar->setLimityCalki(min, max); }
+}
+
+void Symulacja::ustawAntiWindup(bool aktywne) {
+
+    if (uar) uar->setAntiWindup(aktywne);
+}
+
 void Symulacja::ustawModel(std::vector<double> A, std::vector<double> B, int k, double z) {
 
     if (uar) uar->setModel(A, B, k, z);
@@ -81,7 +96,7 @@ void Symulacja::ustawOgraniczeniaModelu(double umin, double umax, double ymin, d
     if(uar) uar->setOgraniczenia(umin, umax, ymin, ymax, aktywne);
 }
 
-void Symulacja::ustawGenerator(int typIndex, double amp, double T, double p) {
+void Symulacja::ustawGenerator(int typIndex, double amp, double S, double T, double p) {
 
     Generator::TypSygnalu typ = Generator::TypSygnalu::Staly;
 
@@ -90,6 +105,7 @@ void Symulacja::ustawGenerator(int typIndex, double amp, double T, double p) {
 
     generator->setTyp(typ);
     generator->setA(amp);
+    generator->setS(S);
     generator->setTrz(T);
     generator->setp(p);
 }

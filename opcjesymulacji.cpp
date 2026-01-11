@@ -2,6 +2,7 @@
 #include "ui_opcjesymulacji.h"
 
 #include <QPushButton>
+#include <QMessageBox>
 
 opcjeSymulacji::opcjeSymulacji(QWidget *parent)
     : QDialog(parent)
@@ -9,7 +10,6 @@ opcjeSymulacji::opcjeSymulacji(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
@@ -76,7 +76,19 @@ void opcjeSymulacji::setParametry(std::vector<double> a, std::vector<double> b, 
 
 void opcjeSymulacji::on_buttonBox_accepted()
 {
+    std::vector<double> vecA = parsujWektor(ui->lineA->text());
+    std::vector<double> vecB = parsujWektor(ui->lineB->text());
 
+    if (vecA.size() < 3 || vecB.size() < 3) {
+
+        QMessageBox::warning(this, "Błąd parametrów!",
+                             "Wielomiany A i B muszą posiadać min. 3 współczynniki!\n"
+                             "Przykład: 1.0, -0.5, 0.2");
+
+        return;
+    }
+
+    accept();
 }
 
 

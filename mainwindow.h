@@ -28,8 +28,22 @@ private slots:
     void on_btnStop_clicked();
     void on_btnReset_clicked();
     void on_btnKonfiguracja_clicked();
+
     void on_spinKp_valueChanged(double);
+    void on_spinTi_valueChanged(double);
+    void on_spinTd_valueChanged(double);
     void on_comboTrybCalk_currentIndexChanged(int index);
+    void on_btnResetCalki_clicked();
+    void on_spinMinI_valueChanged(double arg1);
+    void on_spinMaxI_valueChanged(double arg1);
+    void on_checkAntiWindup_toggled(bool checked);
+
+    void on_comboTyp_currentIndexChanged(int index);
+    void on_spinAmp_valueChanged(double);
+    void on_spinS_valueChanged(double);
+    void on_spinOkres_valueChanged(double);
+    void on_spinWyp_valueChanged(double);
+
     void on_spinInterwal_valueChanged(int arg1);
 
 private:
