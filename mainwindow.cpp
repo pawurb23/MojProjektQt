@@ -28,30 +28,35 @@ MainWindow::MainWindow(QWidget *parent)
     stylizujSerie(seriaD, Qt::blue, "D");
 
     QChart *chart1 = new QChart();
+    QChartView *chartViewY = new QChartView(chart1);
     chart1->addSeries(seriaY);
     chart1->addSeries(seriaYzad);
     chart1->setTitle("Regulacja (y vs y_zad)");
-    przygotujWykres(ui->chartViewY, chart1, {seriaY, seriaYzad}, 0);
+    ui->horizontalLayout_2->addWidget(chartViewY);
+    przygotujWykres(chartViewY, chart1, {seriaY, seriaYzad}, 0);
 
     QChart *chart2 = new QChart();
+    QChartView *chartViewYzad = new QChartView(chart2);
     chart2->addSeries(seriaE);
     chart2->setTitle("Uchyb e(t)");
-    przygotujWykres(ui->chartViewYzad, chart2, {seriaE}, 1);
+    ui->horizontalLayout_2->addWidget(chartViewYzad);
+    przygotujWykres(chartViewYzad, chart2, {seriaE}, 1);
 
     QChart *chart3 = new QChart();
+    QChartView *chartViewU = new QChartView(chart3);
     chart3->addSeries(seriaU);
     chart3->setTitle("Sterowanie u(t)");
-    przygotujWykres(ui->chartViewU, chart3, {seriaU}, 2);
+    ui->horizontalLayout_3->addWidget(chartViewU);
+    przygotujWykres(chartViewU, chart3, {seriaU}, 2);
 
     QChart *chart4 = new QChart();
+    QChartView *chartViewE = new QChartView(chart4);
     chart4->addSeries(seriaP);
     chart4->addSeries(seriaI);
     chart4->addSeries(seriaD);
     chart4->setTitle("Składowe PID");
-    przygotujWykres(ui->chartViewE, chart4, {seriaP, seriaI, seriaD}, 3);
-
-    QChartView *chartview4 = new QChartView(chart4);
-    chartview4->setFixedSize(400, 400);
+    ui->horizontalLayout_3->addWidget(chartViewE);
+    przygotujWykres(chartViewE, chart4, {seriaP, seriaI, seriaD}, 3);
 
     connect(symulacja, &Symulacja::noweDane, this, &MainWindow::aktualizujWykresy);
 }
