@@ -205,16 +205,6 @@ void MainWindow::on_spinTi_valueChanged(double) { przeslijNastawy(); }
 void MainWindow::on_spinTd_valueChanged(double) { przeslijNastawy(); }
 void MainWindow::on_comboTrybCalk_currentIndexChanged(int index) { symulacja->ustawTrybPID(index); }
 void MainWindow::on_btnResetCalki_clicked() { symulacja->zresetujCalkePID(); }
-void MainWindow::on_spinMinI_valueChanged(double) { symulacja->ustawLimityCalki(ui->spinMinI->value(), ui->spinMaxI->value()); }
-void MainWindow::on_spinMaxI_valueChanged(double) { symulacja->ustawLimityCalki(ui->spinMinI->value(), ui->spinMaxI->value()); }
-
-void MainWindow::on_checkAntiWindup_toggled(bool checked)
-{
-    symulacja->ustawAntiWindup(checked);
-
-    ui->spinMinI->setEnabled(checked);
-    ui->spinMaxI->setEnabled(checked);
-}
 
 void MainWindow::on_comboTyp_currentIndexChanged(int) { przeslijNastawy(); }
 void MainWindow::on_spinAmp_valueChanged(double)      { przeslijNastawy(); }
@@ -231,12 +221,6 @@ void MainWindow::przeslijNastawy()
     double ti = ui->spinTi->value();
     double td = ui->spinTd->value();
     symulacja->ustawPID(kp, ti, td);
-    double minI = ui->spinMinI->value();
-    double maxI = ui->spinMaxI->value();
-    symulacja->ustawLimityCalki(minI, maxI);
-    symulacja->ustawAntiWindup(ui->checkAntiWindup->isChecked());
-    ui->spinMinI->setEnabled(ui->checkAntiWindup->isChecked());
-    ui->spinMaxI->setEnabled(ui->checkAntiWindup->isChecked());
 
     int typ = ui->comboTyp->currentIndex();
     double amp = ui->spinAmp->value();

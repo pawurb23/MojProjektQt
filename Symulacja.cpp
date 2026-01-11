@@ -76,16 +76,6 @@ void Symulacja::zresetujCalkePID() {
     if(uar) uar->resetCalki();
 }
 
-void Symulacja::ustawLimityCalki(double min, double max) {
-
-    if (uar) { uar->setLimityCalki(min, max); }
-}
-
-void Symulacja::ustawAntiWindup(bool aktywne) {
-
-    if (uar) uar->setAntiWindup(aktywne);
-}
-
 void Symulacja::ustawModel(std::vector<double> A, std::vector<double> B, int k, double z) {
 
     if (uar) uar->setModel(A, B, k, z);

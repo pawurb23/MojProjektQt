@@ -24,8 +24,6 @@ public:
     void ustawPID(double k, double ti, double td);
     void ustawTrybPID(int index);
     void zresetujCalkePID();
-    void ustawLimityCalki(double min, double max);
-    void ustawAntiWindup(bool aktywne);
 
     void ustawModel(std::vector<double> A, std::vector<double> B, int k, double z);
     void ustawOgraniczeniaModelu(double umin, double umax, double ymin, double ymax, bool aktywne);

@@ -1,6 +1,6 @@
 #include "ProstyUAR.h"
 
-#include <QtGlobal>
+//#include <QtGlobal>
 
 ProstyUAR::ProstyUAR(ModelARX& m, RegulatorPID& r) {
 
@@ -47,7 +47,7 @@ void ProstyUAR::reset() {
     if (regulator) regulator->resetPamieci();
 }
 
-void ProstyUAR::resetCalki() { if(regulator) regulator->zresetujCalke(); }
+void ProstyUAR::resetCalki() { if (regulator) regulator->zresetujCalke(); }
 
 void ProstyUAR::setPID(double k, double ti, double td) {
 
@@ -56,20 +56,7 @@ void ProstyUAR::setPID(double k, double ti, double td) {
 
 void ProstyUAR::setTrybPID(RegulatorPID::LiczCalk tryb) {
 
-    if(regulator) regulator->setLiczCalk(tryb);
-}
-
-void ProstyUAR::setLimityCalki(double min, double max) {
-
-    if (regulator) {
-
-        regulator->setOgraniczeniaCalki(min, max);
-    }
-}
-
-void ProstyUAR::setAntiWindup(bool aktywne) {
-
-    if (regulator) regulator->setAntiWindup(aktywne);
+    if (regulator) regulator->setLiczCalk(tryb);
 }
 
 void ProstyUAR::setModel(std::vector<double> A, std::vector<double> B, int k, double z) {
@@ -85,7 +72,7 @@ void ProstyUAR::setModel(std::vector<double> A, std::vector<double> B, int k, do
 
 void ProstyUAR::setOgraniczenia(double umin, double umax, double ymin, double ymax, bool aktywne) {
 
-    if(czyWlasciciel || model) {
+    if (czyWlasciciel || model) {
 
         model->setOgraniczeniaU(umin, umax);
         model->setOgraniczeniaY(ymin, ymax);
