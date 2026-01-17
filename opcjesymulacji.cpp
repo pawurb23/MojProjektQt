@@ -79,11 +79,10 @@ void opcjeSymulacji::on_buttonBox_accepted()
     std::vector<double> vecA = parsujWektor(ui->lineA->text());
     std::vector<double> vecB = parsujWektor(ui->lineB->text());
 
-    if (vecA.size() < 3 || vecB.size() < 3) {
+    if (vecA.empty() || vecB.empty()) {
 
         QMessageBox::warning(this, "Błąd parametrów!",
-                             "Wielomiany A i B muszą posiadać min. 3 współczynniki!\n"
-                             "Przykład: 1.0, -0.5, 0.2");
+                             "Wielomiany A i B nie mogą być puste!\n");
 
         return;
     }

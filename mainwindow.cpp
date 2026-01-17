@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     seriaD = new QLineSeries();
 
     stylizujSerie(seriaY, Qt::blue, "Wyjście y(t)");
-    stylizujSerie(seriaYzad, Qt::red, "Zadana y_zad(t)");
+    stylizujSerie(seriaYzad, Qt::red, "Wartość zadana y_zad(t)");
     stylizujSerie(seriaE, Qt::magenta, "Uchyb e(t)");
     stylizujSerie(seriaU, Qt::darkGreen, "Sterowanie u(t)");
     stylizujSerie(seriaP, Qt::red, "P");
@@ -69,7 +69,7 @@ MainWindow::~MainWindow()
 void MainWindow::przygotujWykres(QChartView *view, QChart *chart, const QList<QLineSeries*> &serieLista, int index) {
 
     osX[index] = new QValueAxis();
-    osX[index]->setRange(0, 10);
+    osX[index]->setRange(0, 5);
     chart->addAxis(osX[index], Qt::AlignBottom);
 
     osY[index] = new QValueAxis();
@@ -88,9 +88,10 @@ void MainWindow::przygotujWykres(QChartView *view, QChart *chart, const QList<QL
 void MainWindow::stylizujSerie(QLineSeries *series, QColor color, QString nazwa) {
 
     QPen pen(color);
-    pen.setWidthF(1.0);
+    pen.setWidthF(1.5);
     series->setPen(pen);
     series->setName(nazwa);
+    //series->setUseOpenGL(true);
 }
 
 void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, double e, double up, double ui, double ud) {
@@ -105,6 +106,30 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
     seriaI->append(t, ui);
     seriaD->append(t, ud);
 
+    const int maxProbki = 400;
+
+    while (seriaY->count() > maxProbki) {
+
+        seriaY->remove(0);
+        seriaYzad->remove(0);
+        seriaU->remove(0);
+        seriaE->remove(0);
+        seriaP->remove(0);
+        seriaI->remove(0);
+        seriaD->remove(0);
+    }
+
+    if (seriaY->count() > 1) {
+
+        double minX = seriaY->at(0).x();
+        double maxX = seriaY->at(seriaY->count()-1).x();
+
+        for(int i=0; i<4; i++) {
+
+            if(osX[i]) osX[i]->setRange(minX, maxX);
+        }
+    }
+
     double obecnyMax = std::max({y, y_zad, u, e, up, ui, ud});
     double obecnyMin = std::min({y, y_zad, u, e, up, ui, ud});
 
@@ -117,38 +142,6 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
         for(int i=0; i<4; i++) {
 
             if(osY[i]) osY[i]->setRange(minY, maxY);
-        }
-    }
-
-    double oknoCzasu = 10.0;
-
-    if (seriaY->count() > 0) {
-
-        QPointF pierwszy = seriaY->at(0);
-
-        if (pierwszy.x() < t - oknoCzasu) {
-
-            seriaY->remove(0);
-            seriaYzad->remove(0);
-            seriaU->remove(0);
-            seriaE->remove(0);
-            seriaP->remove(0);
-            seriaI->remove(0);
-            seriaD->remove(0);
-        }
-    }
-
-    if (t > oknoCzasu) {
-
-        for(int i=0; i<4; i++) {
-
-            if(osX[i]) { osX[i]->setRange(t - oknoCzasu, t); }
-        }
-    } else {
-
-        for(int i=0; i<4; i++) {
-
-            if(osX[i]) { osX[i]->setRange(0, oknoCzasu); }
         }
     }
 }
