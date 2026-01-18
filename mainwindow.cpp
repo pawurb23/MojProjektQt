@@ -98,7 +98,7 @@ void MainWindow::stylizujSerie(QLineSeries *series, QColor color, QString nazwa)
     //series->setUseOpenGL(true);
 }
 
-void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, double e, double up, double ui, double ud) {
+void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, double e, double up, double u_calk, double ud) {
 
     qDebug() << "Czas:" << t << " Zad:" << y_zad << " Wyj:" << y << " U:" << u;
 
@@ -107,42 +107,63 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
     seriaU->append(t, u);
     seriaE->append(t, e);
     seriaP->append(t, up);
-    seriaI->append(t, ui);
+    seriaI->append(t, u_calk);
     seriaD->append(t, ud);
 
-    const int maxProbki = 400;
+    double wymaganeOkno = ui->spinOknoCzasu->value();
 
-    while (seriaY->count() > maxProbki) {
-
-        seriaY->remove(0);
-        seriaYzad->remove(0);
-        seriaU->remove(0);
-        seriaE->remove(0);
-        seriaP->remove(0);
-        seriaI->remove(0);
-        seriaD->remove(0);
-    }
+    int k_usuwane = 0;
 
     if (seriaY->count() > 1) {
 
-        double minX = seriaY->at(0).x();
-        double maxX = seriaY->at(seriaY->count()-1).x();
+        double t_najstarsze = seriaY->at(0).x();
+        double t_najnowsze = seriaY->at(seriaY->count() - 1).x();
+        double obecnaSzerokosc = t_najnowsze - t_najstarsze;
 
-        for(int i=0; i<4; i++) {
+        double tolerancja = 0.05;
 
-            if(osX[i]) osX[i]->setRange(minX, maxX);
+        if (obecnaSzerokosc > wymaganeOkno + tolerancja) { k_usuwane = 2; }
+        else if (obecnaSzerokosc >= wymaganeOkno - tolerancja) { k_usuwane = 1; }
+        else { k_usuwane = 0; }
+    }
+
+    for(int i = 0; i< k_usuwane; i++) {
+
+        if(seriaY->count() > 0) {
+
+            seriaY->remove(0);
+            seriaYzad->remove(0);
+            seriaU->remove(0);
+            seriaE->remove(0);
+            seriaP->remove(0);
+            seriaI->remove(0);
+            seriaD->remove(0);
         }
     }
 
-    dopasujZakresY(osY[0], {seriaY, seriaYzad});
-    dopasujZakresY(osY[1], {seriaE});
-    dopasujZakresY(osY[2], {seriaU});
-    dopasujZakresY(osY[3], {seriaP, seriaI, seriaD});
+    double uMin = symulacja->pobierzUmin();
+    double uMax = symulacja->pobierzUmax();
+    double yMin = symulacja->pobierzYmin();
+    double yMax = symulacja->pobierzYmax();
+
+    if(ui->chartViewY)
+        dopasujZakresY(osY[0], ui->chartViewY, {seriaY, seriaYzad}, yMin, yMax);
+
+    if(ui->chartViewE)
+        dopasujZakresY(osY[1], ui->chartViewE, {seriaE}, -1000, 1000);
+
+    if(ui->chartViewU)
+        dopasujZakresY(osY[2], ui->chartViewU, {seriaU}, uMin, uMax);
+
+    if(ui->chartViewPID)
+        dopasujZakresY(osY[3], ui->chartViewPID, {seriaP, seriaI, seriaD}, -1000, 1000);
 
     if (seriaY->count() > 0) {
 
         double minX = seriaY->at(0).x();
-        double maxX = seriaY->at(seriaY->count()-1).x();
+        double maxX = seriaY->at(seriaY->count() - 1).x();
+
+        if (maxX - minX < 0.001) maxX = minX + 0.1;
 
         for(int i=0; i<4; i++) {
 
@@ -161,7 +182,7 @@ void MainWindow::dopasujZakresY(QValueAxis *os, const QList<QLineSeries*> &serie
 
         if (seria->count() == 0) continue;
 
-        const auto &punkty = seria->pointsVector();
+        const auto &punkty = seria->points();
 
         for (const QPointF &p : punkty) {
 

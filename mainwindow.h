@@ -23,7 +23,7 @@ public:
 
 private slots:
 
-    void aktualizujWykresy(double t, double y, double y_zad, double u, double e, double up, double ui, double id);
+    void aktualizujWykresy(double t, double y, double y_zad, double u, double e, double up, double u_calk, double id);
     void on_btnStart_clicked();
     void on_btnStop_clicked();
     void on_btnReset_clicked();
