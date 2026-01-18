@@ -133,20 +133,54 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
         }
     }
 
-    double obecnyMax = std::max({y, y_zad, u, e, up, ui, ud});
-    double obecnyMin = std::min({y, y_zad, u, e, up, ui, ud});
+    dopasujZakresY(osY[0], {seriaY, seriaYzad});
+    dopasujZakresY(osY[1], {seriaE});
+    dopasujZakresY(osY[2], {seriaU});
+    dopasujZakresY(osY[3], {seriaP, seriaI, seriaD});
 
-    bool zmianaSkali = false;
-    if (obecnyMax > maxY) { maxY = obecnyMax + 1.0; zmianaSkali = true; }
-    if (obecnyMin < minY) { minY = obecnyMin - 1.0; zmianaSkali = true; }
+    if (seriaY->count() > 1) {
 
-    if (zmianaSkali) {
+        double minX = seriaY->at(0).x();
+        double maxX = seriaY->at(seriaY->count()-1).x();
 
         for(int i=0; i<4; i++) {
 
-            if(osY[i]) osY[i]->setRange(minY, maxY);
+            if(osX[i]) osX[i]->setRange(minX, maxX);
         }
     }
+}
+
+void MainWindow::dopasujZakresY(QValueAxis *os, const QList<QLineSeries*> &serie) {
+    double minVal = 1e9;
+    double maxVal = -1e9;
+    bool znalezionoDane = false;
+
+    for (QLineSeries *seria : serie) {
+
+        if (seria->count() == 0) continue;
+
+        const auto &punkty = seria->pointsVector();
+
+        for (const QPointF &p : punkty) {
+
+            if (p.y() < minVal) minVal = p.y();
+            if (p.y() > maxVal) maxVal = p.y();
+            znalezionoDane = true;
+        }
+    }
+
+    if (!znalezionoDane) return;
+
+    if (std::abs(maxVal - minVal) < 0.0001) {
+
+        maxVal += 1.0;
+        minVal -= 1.0;
+    }
+
+    double margines = (maxVal - minVal) * 0.05;
+    if (margines == 0) margines = 0.1;
+
+    os->setRange(minVal - margines, maxVal + margines);
 }
 
 void MainWindow::on_btnStart_clicked() {

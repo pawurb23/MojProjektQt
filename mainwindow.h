@@ -65,6 +65,7 @@ private:
     QValueAxis *osY[4];
 
     void przygotujWykres(QChartView *view, QChart *chart, const QList<QLineSeries*> &serieLista, int index);
+    void dopasujZakresY(QValueAxis *os, const QList<QLineSeries*> &serie);
     void stylizujSerie(QLineSeries *series, QColor color, QString nazwa);
     void przeslijNastawy();
 };
