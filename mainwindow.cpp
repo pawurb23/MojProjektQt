@@ -74,6 +74,7 @@ void MainWindow::przygotujWykres(QChartView *view, QChart *chart, const QList<QL
     osX[index] = new QValueAxis();
     osX[index]->setRange(0, 5);
     chart->addAxis(osX[index], Qt::AlignBottom);
+    osX[index]->setTitleText("Czas [s]");
 
     osY[index] = new QValueAxis();
     osY[index]->setRange(-10, 10);
@@ -109,27 +110,47 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
     seriaI->append(t, ui);
     seriaD->append(t, ud);
 
-    const int maxProbki = 400;
-
-    while (seriaY->count() > maxProbki) {
-
-        seriaY->remove(0);
-        seriaYzad->remove(0);
-        seriaU->remove(0);
-        seriaE->remove(0);
-        seriaP->remove(0);
-        seriaI->remove(0);
-        seriaD->remove(0);
-    }
+    double Okno = ui->spinOkno->value();
 
     if (seriaY->count() > 1) {
 
-        double minX = seriaY->at(0).x();
-        double maxX = seriaY->at(seriaY->count()-1).x();
+        double czasNajstarszy = seriaY->at(0).x();
+        double czasNajnowszy = seriaY->at(seriaY->count() - 1).x();
+        double obecnaSzerokosc = czasNajnowszy - czasNajstarszy;
 
-        for(int i=0; i<4; i++) {
+        int doUsuniecia = 0;
 
-            if(osX[i]) osX[i]->setRange(minX, maxX);
+        if (obecnaSzerokosc > Okno) {
+
+            doUsuniecia = 2;
+
+            if (obecnaSzerokosc - Okno < 0.2) {
+
+                doUsuniecia = 1;
+            }
+
+        } else {
+
+            doUsuniecia = 0;
+
+            if (obecnaSzerokosc >= Okno) {
+
+                doUsuniecia = 1;
+            }
+        }
+
+        for (int i = 0; i < doUsuniecia; i++) {
+
+            if (seriaY->count() > 0) {
+
+                seriaY->remove(0);
+                seriaYzad->remove(0);
+                seriaU->remove(0);
+                seriaE->remove(0);
+                seriaP->remove(0);
+                seriaI->remove(0);
+                seriaD->remove(0);
+            }
         }
     }
 
@@ -138,7 +159,7 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
     dopasujZakresY(osY[2], {seriaU});
     dopasujZakresY(osY[3], {seriaP, seriaI, seriaD});
 
-    if (seriaY->count() > 1) {
+    if (seriaY->count() > 0) {
 
         double minX = seriaY->at(0).x();
         double maxX = seriaY->at(seriaY->count()-1).x();
