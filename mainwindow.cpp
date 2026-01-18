@@ -110,7 +110,8 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
     seriaI->append(t, ui);
     seriaD->append(t, ud);
 
-    double Okno = ui->spinOkno->value();
+    QSpinBox *spinOkienko = this->findChild<QSpinBox*>("spinOkno");
+    double Okno = (spinOkienko) ? spinOkienko->value() : 10.0;
 
     if (seriaY->count() > 1) {
 
