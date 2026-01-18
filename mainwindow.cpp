@@ -110,48 +110,27 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
     seriaI->append(t, ui);
     seriaD->append(t, ud);
 
-    QSpinBox *spinOkienko = this->findChild<QSpinBox*>("spinOkno");
-    double Okno = (spinOkienko) ? spinOkienko->value() : 10.0;
+    const int maxProbki = 400;
+
+    while (seriaY->count() > maxProbki) {
+
+        seriaY->remove(0);
+        seriaYzad->remove(0);
+        seriaU->remove(0);
+        seriaE->remove(0);
+        seriaP->remove(0);
+        seriaI->remove(0);
+        seriaD->remove(0);
+    }
 
     if (seriaY->count() > 1) {
 
-        double czasNajstarszy = seriaY->at(0).x();
-        double czasNajnowszy = seriaY->at(seriaY->count() - 1).x();
-        double obecnaSzerokosc = czasNajnowszy - czasNajstarszy;
+        double minX = seriaY->at(0).x();
+        double maxX = seriaY->at(seriaY->count()-1).x();
 
-        int doUsuniecia = 0;
+        for(int i=0; i<4; i++) {
 
-        if (obecnaSzerokosc > Okno) {
-
-            doUsuniecia = 2;
-
-            if (obecnaSzerokosc - Okno < 0.2) {
-
-                doUsuniecia = 1;
-            }
-
-        } else {
-
-            doUsuniecia = 0;
-
-            if (obecnaSzerokosc >= Okno) {
-
-                doUsuniecia = 1;
-            }
-        }
-
-        for (int i = 0; i < doUsuniecia; i++) {
-
-            if (seriaY->count() > 0) {
-
-                seriaY->remove(0);
-                seriaYzad->remove(0);
-                seriaU->remove(0);
-                seriaE->remove(0);
-                seriaP->remove(0);
-                seriaI->remove(0);
-                seriaD->remove(0);
-            }
+            if(osX[i]) osX[i]->setRange(minX, maxX);
         }
     }
 
@@ -173,6 +152,7 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
 }
 
 void MainWindow::dopasujZakresY(QValueAxis *os, const QList<QLineSeries*> &serie) {
+
     double minVal = 1e9;
     double maxVal = -1e9;
     bool znalezionoDane = false;
