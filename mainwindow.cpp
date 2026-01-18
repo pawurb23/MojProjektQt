@@ -1,4 +1,7 @@
 #include <QDebug>
+#include <QFileDialog>
+#include <QJsonDocument>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -240,3 +243,70 @@ void MainWindow::przeslijNastawy()
     double p = ui->spinWyp->value();
     symulacja->ustawGenerator(typ, amp, S, okres, p);
 }
+
+void MainWindow::on_actionZapisz_konfiguracj_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Zapisz konfigurację", "", "Pliki JSON (*.json)");
+    if (fileName.isEmpty()) return;
+
+    QJsonObject config = symulacja->zapiszKonfiguracje();
+    QJsonDocument doc(config);
+
+    QFile file(fileName);
+    if (file.open(QIODevice::WriteOnly)) {
+
+        file.write(doc.toJson());
+        file.close();
+        statusBar()->showMessage("Zapisano konfigurację: " + fileName, 3000);
+    } else {
+
+        QMessageBox::critical(this, "Błąd", "Nie udało się zapisać pliku!");
+    }
+}
+
+
+void MainWindow::on_actionWczytaj_konfiguracj_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, "Wczytaj konfigurację", "", "Pliki JSON (*.json)");
+    if (fileName.isEmpty()) return;
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+
+        QMessageBox::critical(this, "Błąd", "Nie udało się otworzyć pliku!");
+        return;
+    }
+
+    QByteArray data = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    if (doc.isNull()) {
+
+        QMessageBox::critical(this, "Błąd", "Niepoprawny format JSON!");
+        return;
+    }
+
+    symulacja->wczytajKonfiguracje(doc.object());
+
+    const bool oldState = ui->spinKp->blockSignals(true);
+
+    ui->spinKp->blockSignals(true); ui->spinKp->setValue(symulacja->pobierzA()[0]);
+
+    ui->spinKp->setValue(symulacja->pobierzKp());
+    ui->spinTi->setValue(symulacja->pobierzTi());
+    ui->spinTd->setValue(symulacja->pobierzTd());
+
+    ui->comboTyp->setCurrentIndex(symulacja->pobierzTypGeneratora());
+    ui->spinAmp->setValue(symulacja->pobierzAmplituda());
+    ui->spinS->setValue(symulacja->pobierzOffset());
+    ui->spinOkres->setValue(symulacja->pobierzOkres());
+    ui->spinWyp->setValue(symulacja->pobierzWypelnienie());
+
+    ui->spinInterwal->setValue(symulacja->pobierzInterwal());
+
+    ui->spinKp->blockSignals(false);
+
+    QMessageBox::information(this, "Sukces", "Wczytano parametry.");
+}
+

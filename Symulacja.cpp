@@ -71,6 +71,10 @@ void Symulacja::ustawTrybPID(int index) {
     if(uar) uar->setTrybPID(tryb);
 }
 
+double Symulacja::pobierzKp() const { return uar ? uar->getRegulator().getStalaWzm() : 0; }
+double Symulacja::pobierzTi() const { return uar ? uar->getRegulator().getStalaCalk() : 0; }
+double Symulacja::pobierzTd() const { return uar ? uar->getRegulator().getStalaRoz() : 0; }
+
 void Symulacja::zresetujCalkePID() {
 
     if(uar) {
@@ -146,4 +150,92 @@ void Symulacja::ustawGenerator(int typIndex, double amp, double S, double T, dou
 void Symulacja::ustawInterwalTimer(int ms) {
 
     timer->setInterval(ms);
+}
+
+QJsonObject Symulacja::zapiszKonfiguracje() const {
+
+    QJsonObject json;
+
+    QJsonObject jsonARX;
+    QJsonArray arrayA, arrayB;
+    for(double v : pobierzA()) arrayA.append(v);
+    for(double v : pobierzB()) arrayB.append(v);
+
+    jsonARX["A"] = arrayA;
+    jsonARX["B"] = arrayB;
+    jsonARX["k"] = pobierzK();
+    jsonARX["z"] = pobierzZ();
+
+    jsonARX["u_min"] = pobierzUmin();
+    jsonARX["u_max"] = pobierzUmax();
+    jsonARX["y_min"] = pobierzYmin();
+    jsonARX["y_max"] = pobierzYmax();
+    jsonARX["ograniczenia_aktywne"] = pobierzOgr();
+
+    json["ModelARX"] = jsonARX;
+
+    QJsonObject jsonPID;
+    if(uar) {
+
+        jsonPID["Kp"] = uar->getRegulator().getStalaWzm();
+        jsonPID["Ti"] = uar->getRegulator().getStalaCalk();
+        jsonPID["Td"] = uar->getRegulator().getStalaRoz();
+        jsonPID["tryb"] = (int)uar->getRegulator().getLiczCalk();
+    }
+    json["PID"] = jsonPID;
+
+    QJsonObject jsonGen;
+    jsonGen["typ"] = pobierzTypGeneratora();
+    jsonGen["amplituda"] = pobierzAmplituda();
+    jsonGen["offset"] = pobierzOffset();
+    jsonGen["okres"] = pobierzOkres();
+    jsonGen["wypelnienie"] = pobierzWypelnienie();
+    json["Generator"] = jsonGen;
+
+    json["interwal_timer"] = timer->interval();
+
+    return json;
+}
+
+void Symulacja::wczytajKonfiguracje(const QJsonObject &json) {
+
+    if (json.contains("ModelARX")) {
+
+        QJsonObject j = json["ModelARX"].toObject();
+
+        std::vector<double> A, B;
+        QJsonArray arrA = j["A"].toArray();
+        QJsonArray arrB = j["B"].toArray();
+
+        for(auto v : arrA) A.push_back(v.toDouble());
+        for(auto v : arrB) B.push_back(v.toDouble());
+
+        ustawModel(A, B, j["k"].toInt(), j["z"].toDouble());
+
+        ustawOgraniczeniaModelu(j["u_min"].toDouble(), j["u_max"].toDouble(),
+                                j["y_min"].toDouble(), j["y_max"].toDouble(),
+                                j["ograniczenia_aktywne"].toBool());
+    }
+
+
+    if (json.contains("PID")) {
+
+        QJsonObject j = json["PID"].toObject();
+
+        ustawPID(j["Kp"].toDouble(), j["Ti"].toDouble(), j["Td"].toDouble());
+    }
+
+    if (json.contains("Generator")) {
+
+        QJsonObject j = json["Generator"].toObject();
+
+        ustawGenerator(j["typ"].toInt(), j["amplituda"].toDouble(),
+                       j["offset"].toDouble(), j["okres"].toDouble(),
+                       j["wypelnienie"].toDouble());
+    }
+
+    if (json.contains("interwal_timer")) {
+
+        ustawInterwalTimer(json["interwal_timer"].toInt());
+    }
 }

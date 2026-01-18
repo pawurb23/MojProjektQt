@@ -43,6 +43,10 @@ private slots:
 
     void on_spinInterwal_valueChanged(int arg1);
 
+    void on_actionZapisz_konfiguracj_triggered();
+
+    void on_actionWczytaj_konfiguracj_triggered();
+
 private:
     Ui::MainWindow *ui;
     Symulacja* symulacja;
