@@ -182,14 +182,32 @@ void MainWindow::on_btnKonfiguracja_clicked() {
 
     opcjeSymulacji okno(this);
 
+    std::vector<double> aktA = symulacja->pobierzA();
+    std::vector<double> aktB = symulacja->pobierzB();
+    int aktK = symulacja->pobierzK();
+    double aktZ = symulacja->pobierzZ();
+    double aktUmin = symulacja->pobierzUmin();
+    double aktUmax = symulacja->pobierzUmax();
+    double aktYmin = symulacja->pobierzYmin();
+    double aktYmax = symulacja->pobierzYmax();
+    bool aktAktywne = symulacja->pobierzOgr();
+
+    okno.setParametry(aktA, aktB, aktK, aktZ, aktUmin, aktUmax, aktYmin, aktYmax, aktAktywne);
+
     if (okno.exec() == QDialog::Accepted) {
 
-        std::vector<double> A = okno.getA();
-        std::vector<double> B = okno.getB();
-        int k = okno.getK();
-        double z = okno.getZ();
+        std::vector<double> noweA = okno.getA();
+        std::vector<double> noweB = okno.getB();
+        int noweK = okno.getK();
+        double noweZ = okno.getZ();
+        double noweUmin = okno.getUmin();
+        double noweUmax = okno.getUmax();
+        double noweYmin = okno.getYmin();
+        double noweYmax = okno.getYmax();
+        bool noweAktywne = okno.getOgr();
 
-        symulacja->ustawModel(A, B, k, z);
+        symulacja->ustawModel(noweA, noweB, noweK, noweZ);
+        symulacja->ustawOgraniczeniaModelu(noweUmin, noweUmax, noweYmin, noweYmax, noweAktywne);
     }
 }
 
@@ -197,7 +215,7 @@ void MainWindow::on_spinKp_valueChanged(double) { przeslijNastawy(); }
 void MainWindow::on_spinTi_valueChanged(double) { przeslijNastawy(); }
 void MainWindow::on_spinTd_valueChanged(double) { przeslijNastawy(); }
 void MainWindow::on_comboTrybCalk_currentIndexChanged(int index) { symulacja->ustawTrybPID(index); }
-void MainWindow::on_btnResetCalki_clicked() { symulacja->zresetujCalkePID(); }
+void MainWindow::on_btnResetCalki_clicked() { ui->spinTi->setValue(0.0); symulacja->zresetujCalkePID(); }
 
 void MainWindow::on_comboTyp_currentIndexChanged(int) { przeslijNastawy(); }
 void MainWindow::on_spinAmp_valueChanged(double)      { przeslijNastawy(); }

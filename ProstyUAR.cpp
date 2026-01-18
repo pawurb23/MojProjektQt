@@ -47,7 +47,11 @@ void ProstyUAR::reset() {
     if (regulator) regulator->resetPamieci();
 }
 
-void ProstyUAR::resetCalki() { if (regulator) regulator->zresetujCalke(); }
+void ProstyUAR::resetCalki() {
+
+    if (regulator) regulator->zresetujCalke();
+    u_akt = regulator->getUp() + regulator->getUi() + regulator->getUd();
+}
 
 void ProstyUAR::setPID(double k, double ti, double td) {
 

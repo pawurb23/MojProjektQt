@@ -73,7 +73,20 @@ void Symulacja::ustawTrybPID(int index) {
 
 void Symulacja::zresetujCalkePID() {
 
-    if(uar) uar->resetCalki();
+    if(uar) {
+
+        uar->resetCalki();
+        double y = uar->getModel().getWyjscie();
+        double y_zad = generator->generuj(numerKroku);
+        double u = uar->getSterowanie();
+        double e = uar->getUchyb();
+
+        double p = uar->getP();
+        double i = uar->getI();
+        double d = uar->getD();
+
+        emit noweDane(czasSymulacji, y, y_zad, u, e, p, i, d);
+    }
 }
 
 void Symulacja::ustawModel(std::vector<double> A, std::vector<double> B, int k, double z) {
@@ -85,6 +98,36 @@ void Symulacja::ustawOgraniczeniaModelu(double umin, double umax, double ymin, d
 
     if(uar) uar->setOgraniczenia(umin, umax, ymin, ymax, aktywne);
 }
+
+std::vector<double> Symulacja::pobierzA() const {
+
+    if (uar) return uar->getModelA();
+    return {};
+}
+
+std::vector<double> Symulacja::pobierzB() const {
+
+    if (uar) return uar->getModelB();
+    return {};
+}
+
+int Symulacja::pobierzK() const {
+
+    if (uar) return uar->getModelK();
+    return 1;
+}
+
+double Symulacja::pobierzZ() const {
+
+    if (uar) return uar->getModelZ();
+    return 0.0;
+}
+
+double Symulacja::pobierzUmin() const { return uar ? uar->getModelUmin() : -10.0; }
+double Symulacja::pobierzUmax() const { return uar ? uar->getModelUmax() : 10.0; }
+double Symulacja::pobierzYmin() const { return uar ? uar->getModelYmin() : -10.0; }
+double Symulacja::pobierzYmax() const { return uar ? uar->getModelYmax() : 10.0; }
+bool Symulacja::pobierzOgr() const { return uar ? uar->getModelOgr() : true; }
 
 void Symulacja::ustawGenerator(int typIndex, double amp, double S, double T, double p) {
 

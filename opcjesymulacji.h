@@ -26,7 +26,7 @@ public:
     double getUmax() const;
     double getYmin() const;
     double getYmax() const;
-    bool getOgraniczeniaAktywne() const;
+    bool getOgr() const;
 
     void setParametry(std::vector<double> a, std::vector<double> b, int k, double z,
                       double umin, double umax, double ymin, double ymax, bool active);

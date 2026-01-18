@@ -28,6 +28,16 @@ public:
     void ustawModel(std::vector<double> A, std::vector<double> B, int k, double z);
     void ustawOgraniczeniaModelu(double umin, double umax, double ymin, double ymax, bool aktywne);
 
+    std::vector<double> pobierzA() const;
+    std::vector<double> pobierzB() const;
+    int pobierzK() const;
+    double pobierzZ() const;
+    double pobierzUmin() const;
+    double pobierzUmax() const;
+    double pobierzYmin() const;
+    double pobierzYmax() const;
+    bool pobierzOgr() const;
+
     void ustawGenerator(int typIndex, double amp, double S, double T, double p);
 
     void ustawInterwalTimer(int ms);

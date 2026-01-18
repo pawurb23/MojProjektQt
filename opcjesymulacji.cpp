@@ -32,25 +32,15 @@ std::vector<double> opcjeSymulacji::parsujWektor(QString tekst) const {
     return wynik;
 }
 
-std::vector<double> opcjeSymulacji::getA() const {
-
-    return parsujWektor(ui->lineA->text());
-}
-
-std::vector<double> opcjeSymulacji::getB() const {
-
-    return parsujWektor(ui->lineB->text());
-}
-
-int opcjeSymulacji::getK() const {
-
-    return ui->spinK->value();
-}
-
-double opcjeSymulacji::getZ() const {
-
-    return ui->spinZ->value();
-}
+std::vector<double> opcjeSymulacji::getA() const { return parsujWektor(ui->lineA->text()); }
+std::vector<double> opcjeSymulacji::getB() const { return parsujWektor(ui->lineB->text()); }
+int opcjeSymulacji::getK() const { return ui->spinK->value(); }
+double opcjeSymulacji::getZ() const { return ui->spinZ->value(); }
+double opcjeSymulacji::getUmin() const { return ui->spinUmin->value(); }
+double opcjeSymulacji::getUmax() const { return ui->spinUmax->value(); }
+double opcjeSymulacji::getYmin() const { return ui->spinYmin->value(); }
+double opcjeSymulacji::getYmax() const { return ui->spinYmax->value(); }
+bool opcjeSymulacji::getOgr() const { return ui->checkOgraniczenia->isChecked(); }
 
 void opcjeSymulacji::setParametry(std::vector<double> a, std::vector<double> b, int k, double z,
                                     double umin, double umax, double ymin, double ymax, bool active) {
