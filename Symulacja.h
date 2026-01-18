@@ -31,6 +31,7 @@ public:
     double pobierzKp() const;
     double pobierzTi() const;
     double pobierzTd() const;
+    int pobierzTryb() const;
 
     void ustawModel(std::vector<double> A, std::vector<double> B, int k, double z);
     void ustawOgraniczeniaModelu(double umin, double umax, double ymin, double ymax, bool aktywne);

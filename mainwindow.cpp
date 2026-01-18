@@ -289,13 +289,21 @@ void MainWindow::on_actionWczytaj_konfiguracj_triggered()
 
     symulacja->wczytajKonfiguracje(doc.object());
 
-    const bool oldState = ui->spinKp->blockSignals(true);
-
-    ui->spinKp->blockSignals(true); ui->spinKp->setValue(symulacja->pobierzA()[0]);
+    const QSignalBlocker blocker1(ui->spinKp);
+    const QSignalBlocker blocker2(ui->spinTi);
+    const QSignalBlocker blocker3(ui->spinTd);
+    const QSignalBlocker blocker4(ui->comboTrybCalk);
+    const QSignalBlocker blocker5(ui->spinAmp);
+    const QSignalBlocker blocker6(ui->spinS);
+    const QSignalBlocker blocker7(ui->spinOkres);
+    const QSignalBlocker blocker8(ui->spinWyp);
+    const QSignalBlocker blocker9(ui->comboTyp);
+    const QSignalBlocker blocker10(ui->spinInterwal);
 
     ui->spinKp->setValue(symulacja->pobierzKp());
     ui->spinTi->setValue(symulacja->pobierzTi());
     ui->spinTd->setValue(symulacja->pobierzTd());
+    ui->comboTrybCalk->setCurrentIndex(symulacja->pobierzTryb());
 
     ui->comboTyp->setCurrentIndex(symulacja->pobierzTypGeneratora());
     ui->spinAmp->setValue(symulacja->pobierzAmplituda());
@@ -304,8 +312,6 @@ void MainWindow::on_actionWczytaj_konfiguracj_triggered()
     ui->spinWyp->setValue(symulacja->pobierzWypelnienie());
 
     ui->spinInterwal->setValue(symulacja->pobierzInterwal());
-
-    ui->spinKp->blockSignals(false);
 
     QMessageBox::information(this, "Sukces", "Wczytano parametry.");
 }
