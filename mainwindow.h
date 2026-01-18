@@ -53,6 +53,11 @@ private:
 
     double minY = -1.0, maxY = 1.0;
 
+    QChartView *viewY;
+    QChartView *viewE;
+    QChartView *viewU;
+    QChartView *viewPID;
+
     QLineSeries *seriaY;
     QLineSeries *seriaYzad;
     QLineSeries *seriaU;
@@ -65,7 +70,7 @@ private:
     QValueAxis *osY[4];
 
     void przygotujWykres(QChartView *view, QChart *chart, const QList<QLineSeries*> &serieLista, int index);
-    void dopasujZakresY(QValueAxis *os, const QList<QLineSeries*> &serie);
+    void dopasujZakresY(QValueAxis *os, QChartView *view, const QList<QLineSeries*> &serie, double limitMin, double limitMax);
     void stylizujSerie(QLineSeries *series, QColor color, QString nazwa);
     void przeslijNastawy();
 };

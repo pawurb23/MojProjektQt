@@ -31,35 +31,35 @@ MainWindow::MainWindow(QWidget *parent)
     stylizujSerie(seriaD, Qt::blue, "D");
 
     QChart *chart1 = new QChart();
-    QChartView *chartViewY = new QChartView(chart1);
+    viewY = new QChartView(chart1);
     chart1->addSeries(seriaY);
     chart1->addSeries(seriaYzad);
     chart1->setTitle("Regulacja (y vs y_zad)");
-    ui->horizontalLayout_2->addWidget(chartViewY);
-    przygotujWykres(chartViewY, chart1, {seriaY, seriaYzad}, 0);
+    ui->horizontalLayout_2->addWidget(viewY);
+    przygotujWykres(viewY, chart1, {seriaY, seriaYzad}, 0);
 
     QChart *chart2 = new QChart();
-    QChartView *chartViewYzad = new QChartView(chart2);
+    viewE = new QChartView(chart2);
     chart2->addSeries(seriaE);
     chart2->setTitle("Uchyb e(t)");
-    ui->horizontalLayout_2->addWidget(chartViewYzad);
-    przygotujWykres(chartViewYzad, chart2, {seriaE}, 1);
+    ui->horizontalLayout_2->addWidget(viewE);
+    przygotujWykres(viewE, chart2, {seriaE}, 1);
 
     QChart *chart3 = new QChart();
-    QChartView *chartViewU = new QChartView(chart3);
+    viewU = new QChartView(chart3);
     chart3->addSeries(seriaU);
     chart3->setTitle("Sterowanie u(t)");
-    ui->horizontalLayout_3->addWidget(chartViewU);
-    przygotujWykres(chartViewU, chart3, {seriaU}, 2);
+    ui->horizontalLayout_3->addWidget(viewU);
+    przygotujWykres(viewU, chart3, {seriaU}, 2);
 
     QChart *chart4 = new QChart();
-    QChartView *chartViewE = new QChartView(chart4);
+    viewPID = new QChartView(chart4);
     chart4->addSeries(seriaP);
     chart4->addSeries(seriaI);
     chart4->addSeries(seriaD);
     chart4->setTitle("Składowe PID");
-    ui->horizontalLayout_3->addWidget(chartViewE);
-    przygotujWykres(chartViewE, chart4, {seriaP, seriaI, seriaD}, 3);
+    ui->horizontalLayout_3->addWidget(viewPID);
+    przygotujWykres(viewPID, chart4, {seriaP, seriaI, seriaD}, 3);
 
     connect(symulacja, &Symulacja::noweDane, this, &MainWindow::aktualizujWykresy);
 }
@@ -146,17 +146,17 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
     double yMin = symulacja->pobierzYmin();
     double yMax = symulacja->pobierzYmax();
 
-    if(ui->chartViewY)
-        dopasujZakresY(osY[0], ui->chartViewY, {seriaY, seriaYzad}, yMin, yMax);
+    if(viewY)
+        dopasujZakresY(osY[0], viewY, {seriaY, seriaYzad}, yMin, yMax);
 
-    if(ui->chartViewE)
-        dopasujZakresY(osY[1], ui->chartViewE, {seriaE}, -1000, 1000);
+    if(viewE)
+        dopasujZakresY(osY[1], viewE, {seriaE}, -1000, 1000);
 
-    if(ui->chartViewU)
-        dopasujZakresY(osY[2], ui->chartViewU, {seriaU}, uMin, uMax);
+    if(viewU)
+        dopasujZakresY(osY[2], viewU, {seriaU}, uMin, uMax);
 
-    if(ui->chartViewPID)
-        dopasujZakresY(osY[3], ui->chartViewPID, {seriaP, seriaI, seriaD}, -1000, 1000);
+    if(viewPID)
+        dopasujZakresY(osY[3], viewPID, {seriaP, seriaI, seriaD}, -1000, 1000);
 
     if (seriaY->count() > 0) {
 
@@ -172,7 +172,9 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
     }
 }
 
-void MainWindow::dopasujZakresY(QValueAxis *os, const QList<QLineSeries*> &serie) {
+void MainWindow::dopasujZakresY(QValueAxis *os, QChartView *view, const QList<QLineSeries*> &serie, double limitMin, double limitMax) {
+
+    if (serie.isEmpty()) return;
 
     double minVal = 1e9;
     double maxVal = -1e9;
@@ -180,10 +182,7 @@ void MainWindow::dopasujZakresY(QValueAxis *os, const QList<QLineSeries*> &serie
 
     for (QLineSeries *seria : serie) {
 
-        if (seria->count() == 0) continue;
-
         const auto &punkty = seria->points();
-
         for (const QPointF &p : punkty) {
 
             if (p.y() < minVal) minVal = p.y();
@@ -194,16 +193,32 @@ void MainWindow::dopasujZakresY(QValueAxis *os, const QList<QLineSeries*> &serie
 
     if (!znalezionoDane) return;
 
-    if (std::abs(maxVal - minVal) < 0.0001) {
+    double obecnaRozpietosc = maxVal - minVal;
+    const double MINIMALNA_ROZPIETOSC = 2.0;
 
-        maxVal += 1.0;
-        minVal -= 1.0;
+    if (obecnaRozpietosc < MINIMALNA_ROZPIETOSC) {
+
+        double srodek = (maxVal + minVal) / 2.0;
+        minVal = srodek - (MINIMALNA_ROZPIETOSC / 2.0);
+        maxVal = srodek + (MINIMALNA_ROZPIETOSC / 2.0);
+    } else {
+
+        double margines = obecnaRozpietosc * 0.05;
+        minVal -= margines;
+        maxVal += margines;
     }
 
-    double margines = (maxVal - minVal) * 0.05;
-    if (margines == 0) margines = 0.1;
+    os->setRange(minVal, maxVal);
 
-    os->setRange(minVal - margines, maxVal + margines);
+    bool alarm = false;
+
+    if (view && limitMax > limitMin) {
+
+        if (maxVal > limitMax + 0.01 || minVal < limitMin - 0.01) { alarm = true; }
+
+        if (alarm) { view->setStyleSheet("border: 3px solid red; border-radius: 4px; margin: 0px;"); }
+        else { view->setStyleSheet("border: 3px solid transparent; border-radius: 4px; margin: 0px;"); }
+    }
 }
 
 void MainWindow::on_btnStart_clicked() {
