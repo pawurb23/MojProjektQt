@@ -110,7 +110,7 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
     seriaI->append(t, u_calk);
     seriaD->append(t, ud);
 
-    double wymaganeOkno = ui->spinOknoCzasu->value();
+    double Okno = ui->spinOknoCzasu->value();
 
     int k_usuwane = 0;
 
@@ -122,8 +122,8 @@ void MainWindow::aktualizujWykresy(double t, double y, double y_zad, double u, d
 
         double tolerancja = 0.05;
 
-        if (obecnaSzerokosc > wymaganeOkno + tolerancja) { k_usuwane = 2; }
-        else if (obecnaSzerokosc >= wymaganeOkno - tolerancja) { k_usuwane = 1; }
+        if (obecnaSzerokosc > Okno + tolerancja) { k_usuwane = 2; }
+        else if (obecnaSzerokosc >= Okno - tolerancja) { k_usuwane = 1; }
         else { k_usuwane = 0; }
     }
 
