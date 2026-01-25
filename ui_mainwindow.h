@@ -36,18 +36,6 @@ public:
     QWidget *centralwidget;
     QGridLayout *gridLayout;
     QHBoxLayout *horizontalLayout_2;
-    QHBoxLayout *horizontalLayout_3;
-    QGroupBox *groupBox_2;
-    QVBoxLayout *verticalLayout_2;
-    QLabel *label_8;
-    QComboBox *comboTrybCalk;
-    QLabel *label_5;
-    QDoubleSpinBox *spinKp;
-    QLabel *label_6;
-    QDoubleSpinBox *spinTi;
-    QPushButton *btnResetCalki;
-    QLabel *label_7;
-    QDoubleSpinBox *spinTd;
     QGroupBox *groupBox;
     QVBoxLayout *verticalLayout;
     QLabel *label;
@@ -60,6 +48,18 @@ public:
     QDoubleSpinBox *spinWyp;
     QLabel *label_9;
     QDoubleSpinBox *spinS;
+    QHBoxLayout *horizontalLayout_3;
+    QGroupBox *groupBox_2;
+    QVBoxLayout *verticalLayout_2;
+    QLabel *label_8;
+    QComboBox *comboTrybCalk;
+    QLabel *label_5;
+    QDoubleSpinBox *spinKp;
+    QLabel *label_6;
+    QDoubleSpinBox *spinTi;
+    QPushButton *btnResetCalki;
+    QLabel *label_7;
+    QDoubleSpinBox *spinTd;
     QGroupBox *groupBox_3;
     QHBoxLayout *horizontalLayout;
     QPushButton *btnStart;
@@ -95,69 +95,6 @@ public:
         horizontalLayout_2->setObjectName("horizontalLayout_2");
 
         gridLayout->addLayout(horizontalLayout_2, 1, 1, 1, 1);
-
-        horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setObjectName("horizontalLayout_3");
-
-        gridLayout->addLayout(horizontalLayout_3, 4, 1, 1, 1);
-
-        groupBox_2 = new QGroupBox(centralwidget);
-        groupBox_2->setObjectName("groupBox_2");
-        groupBox_2->setMinimumSize(QSize(0, 350));
-        groupBox_2->setMaximumSize(QSize(160, 350));
-        verticalLayout_2 = new QVBoxLayout(groupBox_2);
-        verticalLayout_2->setObjectName("verticalLayout_2");
-        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
-        label_8 = new QLabel(groupBox_2);
-        label_8->setObjectName("label_8");
-
-        verticalLayout_2->addWidget(label_8);
-
-        comboTrybCalk = new QComboBox(groupBox_2);
-        comboTrybCalk->addItem(QString());
-        comboTrybCalk->addItem(QString());
-        comboTrybCalk->setObjectName("comboTrybCalk");
-
-        verticalLayout_2->addWidget(comboTrybCalk);
-
-        label_5 = new QLabel(groupBox_2);
-        label_5->setObjectName("label_5");
-
-        verticalLayout_2->addWidget(label_5);
-
-        spinKp = new QDoubleSpinBox(groupBox_2);
-        spinKp->setObjectName("spinKp");
-
-        verticalLayout_2->addWidget(spinKp);
-
-        label_6 = new QLabel(groupBox_2);
-        label_6->setObjectName("label_6");
-
-        verticalLayout_2->addWidget(label_6);
-
-        spinTi = new QDoubleSpinBox(groupBox_2);
-        spinTi->setObjectName("spinTi");
-
-        verticalLayout_2->addWidget(spinTi);
-
-        btnResetCalki = new QPushButton(groupBox_2);
-        btnResetCalki->setObjectName("btnResetCalki");
-
-        verticalLayout_2->addWidget(btnResetCalki);
-
-        label_7 = new QLabel(groupBox_2);
-        label_7->setObjectName("label_7");
-        label_7->setMinimumSize(QSize(0, 20));
-
-        verticalLayout_2->addWidget(label_7);
-
-        spinTd = new QDoubleSpinBox(groupBox_2);
-        spinTd->setObjectName("spinTd");
-
-        verticalLayout_2->addWidget(spinTd);
-
-
-        gridLayout->addWidget(groupBox_2, 4, 0, 1, 1);
 
         groupBox = new QGroupBox(centralwidget);
         groupBox->setObjectName("groupBox");
@@ -225,6 +162,69 @@ public:
 
 
         gridLayout->addWidget(groupBox, 1, 0, 1, 1);
+
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setObjectName("horizontalLayout_3");
+
+        gridLayout->addLayout(horizontalLayout_3, 4, 1, 1, 1);
+
+        groupBox_2 = new QGroupBox(centralwidget);
+        groupBox_2->setObjectName("groupBox_2");
+        groupBox_2->setMinimumSize(QSize(0, 350));
+        groupBox_2->setMaximumSize(QSize(160, 350));
+        verticalLayout_2 = new QVBoxLayout(groupBox_2);
+        verticalLayout_2->setObjectName("verticalLayout_2");
+        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
+        label_8 = new QLabel(groupBox_2);
+        label_8->setObjectName("label_8");
+
+        verticalLayout_2->addWidget(label_8);
+
+        comboTrybCalk = new QComboBox(groupBox_2);
+        comboTrybCalk->addItem(QString());
+        comboTrybCalk->addItem(QString());
+        comboTrybCalk->setObjectName("comboTrybCalk");
+
+        verticalLayout_2->addWidget(comboTrybCalk);
+
+        label_5 = new QLabel(groupBox_2);
+        label_5->setObjectName("label_5");
+
+        verticalLayout_2->addWidget(label_5);
+
+        spinKp = new QDoubleSpinBox(groupBox_2);
+        spinKp->setObjectName("spinKp");
+
+        verticalLayout_2->addWidget(spinKp);
+
+        label_6 = new QLabel(groupBox_2);
+        label_6->setObjectName("label_6");
+
+        verticalLayout_2->addWidget(label_6);
+
+        spinTi = new QDoubleSpinBox(groupBox_2);
+        spinTi->setObjectName("spinTi");
+
+        verticalLayout_2->addWidget(spinTi);
+
+        btnResetCalki = new QPushButton(groupBox_2);
+        btnResetCalki->setObjectName("btnResetCalki");
+
+        verticalLayout_2->addWidget(btnResetCalki);
+
+        label_7 = new QLabel(groupBox_2);
+        label_7->setObjectName("label_7");
+        label_7->setMinimumSize(QSize(0, 20));
+
+        verticalLayout_2->addWidget(label_7);
+
+        spinTd = new QDoubleSpinBox(groupBox_2);
+        spinTd->setObjectName("spinTd");
+
+        verticalLayout_2->addWidget(spinTd);
+
+
+        gridLayout->addWidget(groupBox_2, 4, 0, 1, 1);
 
         groupBox_3 = new QGroupBox(centralwidget);
         groupBox_3->setObjectName("groupBox_3");
@@ -308,15 +308,6 @@ public:
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         actionZapisz_konfiguracj->setText(QCoreApplication::translate("MainWindow", "Zapisz konfiguracj\304\231", nullptr));
         actionWczytaj_konfiguracj->setText(QCoreApplication::translate("MainWindow", "Wczytaj konfiguracj\304\231", nullptr));
-        groupBox_2->setTitle(QCoreApplication::translate("MainWindow", "Parametry Regulatora:", nullptr));
-        label_8->setText(QCoreApplication::translate("MainWindow", "Tryb ca\305\202kowania", nullptr));
-        comboTrybCalk->setItemText(0, QCoreApplication::translate("MainWindow", "Zewn\304\231trznie", nullptr));
-        comboTrybCalk->setItemText(1, QCoreApplication::translate("MainWindow", "Wewn\304\231trznie", nullptr));
-
-        label_5->setText(QCoreApplication::translate("MainWindow", "Wzmocnienie (Kp):", nullptr));
-        label_6->setText(QCoreApplication::translate("MainWindow", "Sta\305\202a ca\305\202kowania (Ki):", nullptr));
-        btnResetCalki->setText(QCoreApplication::translate("MainWindow", "Reset Ca\305\202ki", nullptr));
-        label_7->setText(QCoreApplication::translate("MainWindow", "Sta\305\202a r\303\263\305\274niczkowania(Kd):", nullptr));
         groupBox->setTitle(QCoreApplication::translate("MainWindow", "Parametry Generatora", nullptr));
         label->setText(QCoreApplication::translate("MainWindow", "Typ Sygna\305\202u:", nullptr));
         comboTyp->setItemText(0, QCoreApplication::translate("MainWindow", "Sta\305\202y", nullptr));
@@ -327,6 +318,15 @@ public:
         label_3->setText(QCoreApplication::translate("MainWindow", "Okres (T):", nullptr));
         label_4->setText(QCoreApplication::translate("MainWindow", "Wype\305\202nienie (p):", nullptr));
         label_9->setText(QCoreApplication::translate("MainWindow", "Sta\305\202a sk\305\202adowa (S):", nullptr));
+        groupBox_2->setTitle(QCoreApplication::translate("MainWindow", "Parametry Regulatora:", nullptr));
+        label_8->setText(QCoreApplication::translate("MainWindow", "Tryb ca\305\202kowania", nullptr));
+        comboTrybCalk->setItemText(0, QCoreApplication::translate("MainWindow", "Zewn\304\231trznie", nullptr));
+        comboTrybCalk->setItemText(1, QCoreApplication::translate("MainWindow", "Wewn\304\231trznie", nullptr));
+
+        label_5->setText(QCoreApplication::translate("MainWindow", "Wzmocnienie (Kp):", nullptr));
+        label_6->setText(QCoreApplication::translate("MainWindow", "Sta\305\202a ca\305\202kowania (Ki):", nullptr));
+        btnResetCalki->setText(QCoreApplication::translate("MainWindow", "Reset Ca\305\202ki", nullptr));
+        label_7->setText(QCoreApplication::translate("MainWindow", "Sta\305\202a r\303\263\305\274niczkowania(Kd):", nullptr));
         groupBox_3->setTitle(QString());
         btnStart->setText(QCoreApplication::translate("MainWindow", "Start", nullptr));
         btnStop->setText(QCoreApplication::translate("MainWindow", "Stop", nullptr));

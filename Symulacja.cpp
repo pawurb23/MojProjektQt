@@ -2,8 +2,8 @@
 
 Symulacja::Symulacja(QObject *parent) : QObject(parent) {
 
-    krokCzasu = 0.02;
-    int Tt_ms = 20;
+    krokCzasu = 0.1;
+    int Tt_ms = 100;
 
     uar = new ProstyUAR();
 
