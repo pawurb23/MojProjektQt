@@ -2,8 +2,8 @@
 
 Symulacja::Symulacja(QObject *parent) : QObject(parent) {
 
-    krokCzasu = 0.01;
-    int Tt_ms = 200;
+    krokCzasu = 0.02;
+    int Tt_ms = 20;
 
     uar = new ProstyUAR();
 
@@ -43,6 +43,8 @@ bool Symulacja::czyDziala() const {
 }
 
 void Symulacja::wykonajKrok() {
+
+    qDebug() << "Aktualne Tp:" << krokCzasu;
 
     double y_zad = generator->generuj(static_cast<int>(numerKroku));
 
